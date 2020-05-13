@@ -1,0 +1,222 @@
+<script src="../simpletest.js"></script>
+<script>
+// Prototype implementation 
+// function filter (array, callback) {
+
+//function find (array, callback, customObject) {
+//   for (i=0; i<array.length; i++) {
+//    if (callback (array[i], i, array, customObject)) {
+//      return array[i]
+//   }
+//   }
+// }
+// 
+
+// Function signature
+// find(array, callback(element[, index[, array]])[, thisArg])
+
+// Callback parameters 
+
+// element - the current element of the array - array[i]
+// index - position of the item in the array - i
+// array -  array itself
+
+//Requirements 
+
+// Callback runs as many times as it takes to find the first truthy element 
+
+// Callback should return the value of the truthy element 
+
+// Callback should return undefined if there was not found a truthy element
+
+// Callback visits all indexes, including holes
+
+// Callback visits all indexes, including deleted
+
+// Callback has access to custom object, if provided and uses it as the this value inside each invocation.
+
+// Find does not change the original array.
+
+// Callback can change an element
+
+// Value of changed element, passed to callback, will be the one it had at the moment of find invocation 
+
+// Callback will not visit items added to the array after the invocation of find  
+
+// Callback visits the elements that are deleted 
+
+
+
+// Return value 
+// The value of the first element in the array that satisfies provided testing function (callback is truthy). If none - return undefined
+
+function find (array, callback, someObject) {
+var findCallback = callback;
+var length = array.length
+var originalArray = array
+  if (someObject) {
+    findCallback = callback.bind(someObject)
+  }
+
+  for (i=0; i<length; i++) {
+    if (findCallback(originalArray[i], i, originalArray, someObject)) {
+      return originalArray[i];
+    }
+  }
+}
+
+tests({
+
+  'It runs as many times, as it takes to meet truthy element': function(){
+    var array = [1, 2, 3];
+    var counter = 0;
+    find (array, function(element) {
+      counter++;
+      return element === 2
+      
+    })
+    eq(counter, 2);
+  },
+
+  'It returns the value of an element, which was the one to pass the condition first': function () {
+
+    var array = [1, 2, 3, 2, 2];
+    var counter = 0;
+    find (array, function(element) {
+      counter++;
+      return element === 2
+      
+    })
+    eq(counter, 2);
+  },
+
+  'It returns undefined if no truthy element was found': function () {
+    var array = [1, 2, 3, 2, 2];
+
+    var result = find (array, function(element) {
+      return element === 5
+    })
+    eq(result, undefined);
+  },
+
+  'It visits all indexes, including holes': function () {
+
+    var array = [0,1,,,,5,6];
+    var counter = 0;
+    find (array, function(value, index) {
+      counter++
+    });
+    eq(counter, 7);
+  },
+
+  'It visits all indexes, including deleted': function () {
+    var array = [1, 2, 3, 2, 2];
+    var counter = 0;
+        find(array, function(value, index) {
+      // Delete element 5 on first iteration
+      if (index === 0) {
+        delete array[4];
+      }
+      // Element 4 is still visited even though deleted
+      //console.log('Visited index ', index, ' with value ', value); 
+      counter++;
+    });
+    eq(counter, 5);
+  },
+
+  'It has an access to custom object, if one is provided': function () {
+    var array = [1, 2, 3, 2, 2];
+    find(array, function(value, index, array) {
+    
+    //console.log('Visited index ', index, ' with access to thisArg ', this.description); 
+      eq(this.description, 'I am optional object')
+    }, {description: 'I am optional object'});
+
+  },
+
+  'The Find() does not change original array': function () {
+
+    var originalArray = [1, 2, 3, 2, 2];
+  
+    find (originalArray, function(value, index, originalArray) {
+      array = originalArray;
+      return array
+      
+    })
+    eq(originalArray, array);
+  },
+
+  'Callback can change element of the original array': function () {
+    var array = [1, 2, 3] 
+    find(array, function(value, index, array) {
+    // Change element 0 on first iteration
+    if (index === 0) {
+    
+      array[0] = 100500;
+
+    }
+    return value === 1;
+    });
+     // The element was changed 
+    eq(array[0], 100500);
+  },
+
+  'Despite of the change, value of element passed to callback is the one, which it had at Find invocation': function () {
+    var array = [1, 2, 3] 
+    find(array, function(value, index, array) {
+    // Change element 0 on first iteration
+    if (index === 0) {
+    
+      array[0] = 100500;
+
+    }
+    // Element 0 was passed with initial value
+    eq(value, 1)
+    return value === 1;
+    });
+  },
+
+  'Callback will not visit elements, added after Find invocation': function () {
+    var array = [1, 2, 3] 
+    var result = find(array, function(value, index, array) {
+    // Adding extra element on first iteration
+    if (index === 0) {
+      array.push(4);
+    }
+    // Callback doesn't visit added element
+    return value === 4;
+    });
+     // However the element was added 
+    eq(result, undefined);
+    eq (array.length, 4)
+  },
+
+  'Callback visits the elements, which are deleted': function () {
+    var array = [1, 2, 3, 4, 5, 6]
+    var counter = 0;
+    find(array, function(value, index) {
+      // Delete element 5 on first iteration
+      if (index === 0) {
+        delete array[5];
+      }
+      // Element 5 is still visited even though deleted
+      //console.log('Visited index ', index, ' with value ', value); 
+      counter++
+      return value === 6;
+    });
+    eq (counter, 6)
+  }
+})
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
