@@ -1,0 +1,81 @@
+<script src="../simpletest.js"></script>
+<script>
+
+// Example 1 Callback should run 3 times
+// forEach([1,2,3], function(){
+// console.log('hi');
+//});
+
+//Example 2 Callback has an access to ith element
+// forEach ([1,2,3], function(number){
+//console.log(number);
+//});
+
+//Example 3 Callback has an accsess to i
+// forEach ([1,2,3], function(number, position){
+// console.log(position);
+//});
+
+// Example 4 Callback has an access to original array
+// forEach ([1,2,3], function(number, position, array){
+// console.log(array);
+//});
+
+// Example 5 optional this
+// forEach ([1,2,3], function(number, position, optionalObject) {
+// console.log(this.description)
+//}, {description: 'I am optional object'});
+
+
+function forEach (array, callback, someObject) {
+  var forEachCallback = callback
+  if (someObject) {
+    forEachCallback = callback.bind(someObject)
+  }
+  for (i=0; i<array.length; i++){
+  forEachCallback(array[i], i, array);
+}
+}
+
+
+tests({
+
+  'it should run callback array.length times': function () {
+    var counter = 0;
+    forEach([1], function(){
+      counter++;
+    })
+    eq(1, counter);
+  },
+
+  'it should have access to array element': function() {
+    forEach ([1], function(number) {
+      eq(1, number)
+    })
+    
+  },
+
+  'it should have access to position number': function() {
+    forEach ([1], function(number, position, array){
+      eq(0, position);
+    })
+  },
+  'it should pass in original array': function() {
+
+    var testArray = [1,2,3]
+
+    forEach (testArray, function(number, position, originalArray){
+      eq(testArray, originalArray)
+    })
+  },
+
+  'it should pass in thisValue': function () {
+    forEach ([1], function(number, position, array){
+      eq(this.description, 'custom thisValue')
+    }, {description: 'custom thisValue'})
+  }
+
+});
+
+
+</script>
