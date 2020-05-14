@@ -1,0 +1,203 @@
+<script src="../simpletest.js"></script>
+<script>
+// Prototype implementation 
+// function every (array, callback) {
+
+// function every (array, callback) {
+
+// for (i=0; i<array.length; i++) {
+//   if (!callback(array[i], i, array)){
+//     return false
+//   }
+// }
+// return true
+// }
+// 
+
+// Function signature
+// every(array, callback(element[, index[, array]])[, thisArg])
+
+// Callback parameters 
+
+// element - the current element of the array - array[i]
+// index - position of the item in the array - i
+// array -  array itself
+// thisArg - a value to use as this when executing callback
+
+
+//Requirements 
+
+// Callback runs array.length times and returns true if all elements return true value
+
+// Callback immediately returns false after finding element with falsy value
+
+// Callback ignores holes
+
+// Callback ignores deleted elements
+
+// Callback has access to custom object, if provided and uses it as the this value inside each invocation.
+
+// every does not change the original array.
+
+// Callback can change an element
+
+// Value of changed element, passed to callback, will be the one it had at the moment of find invocation 
+
+// Callback will not visit items added to the array after the invocation of find  
+
+
+
+
+// Return value 
+// true if the callback function returns a truthy value for every array element. Otherwise, false.
+
+function every (array, callback, someObject) {
+  var startingIndex = 0;
+  var everyCallback = callback;
+  var length = array.length
+  var originalArray = array
+    if (someObject) {
+      everyCallback = callback.bind(someObject)
+    }
+
+
+  while (startingIndex in array === false && startingIndex < length) {
+        startingIndex++;
+      }
+    for (i=startingIndex; i<length; i++) {
+      if (i in array) {
+        if (!everyCallback(originalArray[i], i, originalArray, someObject)) {
+          return false;
+        } 
+      }
+    }
+    return true;
+  }
+
+tests({
+
+  'It runs array.length times, if all elements have truthy values and returns true': function(){
+    var array = [1, 2, 3];
+    var counter = 0;
+
+    var result = every (array, function(element, i) {
+      counter++;
+      return element >= 1
+      
+    })
+    eq(counter, 3);
+    eq (result, true)
+  },
+
+  'Callback immediately returns false after finding element with falsy value': function () {
+
+    var array = [1, 2, 3, 2, 2];
+    var counter = 0;
+    var result = every (array, function(element, i) {
+      counter++;
+      return element < 2
+      
+    })
+    eq(result, false);
+    eq(counter, 2)
+  },
+
+  'It ignores holes': function () {
+
+    var array = [9,7,,,,5,6];
+    var counter = 0;
+    every (array, function(element, i) {
+      counter++
+      return element >= 5;
+    });
+    eq(counter, 4);
+  },
+
+  'It ignores deleted': function () {
+    var array = [1, 2, 3, 2, 2];
+    var counter = 0;
+        every(array, function(element, index) {
+      // Delete element 4 on first iteration
+      if (index === 0) {
+        delete array[4];
+      }
+      // Element 4 is not visited 
+      //console.log('Visited index ', index, ' with value ', value); 
+      counter++;
+      return element >= 1;
+    });
+    eq(counter, 4);
+  },
+
+  'It has an access to custom object, if one is provided': function () {
+    var array = [1, 2, 3, 2, 2];
+    every(array, function(value, index, array) {
+    
+    //console.log('Visited index ', index, ' with access to thisArg ', this.description); 
+      eq(this.description, 'I am optional object')
+    }, {description: 'I am optional object'});
+
+  },
+
+  'The every() does not change original array': function () {
+
+    var originalArray = [1, 2, 3, 2, 2];
+  
+    every (originalArray, function(value, index, originalArray) {
+      array = originalArray;
+      return array
+      
+    })
+    eq(originalArray, array);
+  },
+
+  'Callback can change element of the original array': function () {
+    var array = [1, 2, 3] 
+    every(array, function(value, index, array) {
+    // Change element 0 on first iteration
+    if (index === 0) {
+    
+      array[0] = 100500;
+
+    }
+    return value === 1;
+    });
+     // The element was changed 
+    eq(array[0], 100500);
+  },
+
+  'Despite of the change, value of element passed to callback is the one, which it had at every invocation': function () {
+    var array = [1, 2, 3] 
+   var result = every(array, function(value, index, array) {
+    // Change element 0 on first iteration
+    if (index === 0) {
+    
+      array[0] = 100500;
+
+    }
+    // Element 0 was passed with initial value
+    
+    return value >= 1;
+    });
+    eq(result, true)
+  },
+
+  'Callback will not visit elements, added after every() invocation': function () {
+    var array = [1, 2, 3] 
+    var result = every(array, function(value, index, array) {
+    // Adding extra element on first iteration
+    if (index === 0) {
+      array.push(4);
+    }
+    // Callback doesn't visit added element
+    return value < 4;
+    });
+     // However the element was added 
+    eq(result, true);
+    eq (array.length, 4)
+  }
+})
+
+
+
+</script>
