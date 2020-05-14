@@ -1,0 +1,206 @@
+<script src="../simpletest.js"></script>
+<script>
+// Prototype implementation 
+// function findIndex (array, callback) {
+
+//function findIndex (array, callback, customObject) {
+//   for (i=0; i<array.length; i++) {
+//    if (callback (array[i], i, array, customObject)) {
+//      return i
+//   }
+//   }
+// }
+// 
+
+// Function signature
+// findIndex(array, callback(element[, index[, array]])[, thisArg])
+
+// Callback parameters 
+
+// element - the current element of the array - array[i]
+// index - position of the item in the array - i
+// array -  array itself
+
+
+//Requirements 
+
+// Callback runs as many times as it takes to findIndex the first truthy element 
+
+// Callback should return the index of the truthy element 
+
+// Callback should return '-1' if there was not found a truthy element
+
+// Callback ignores holes
+
+// Callback ignores deleted elements
+
+// Callback has access to custom object, if provided and uses it as the this value inside each invocation.
+
+// findIndex does not change the original array.
+
+// Callback can change an element
+
+// Value of changed element, passed to callback, will be the one it had at the moment of find invocation 
+
+// Callback will not visit items added to the array after the invocation of find  
+
+
+
+
+// Return value 
+// The value of the first element in the array that satisfies provided testing function (callback is truthy). If none - return undefined
+
+function findIndex (array, callback, someObject) {
+  var startingIndex = 0;
+  var findIndexCallback = callback;
+  var length = array.length
+  var originalArray = array
+    if (someObject) {
+      findIndexCallback = callback.bind(someObject)
+    }
+  var result = -1;
+
+  while (startingIndex in array === false && startingIndex < length) {
+        startingIndex++;
+      }
+    for (i=startingIndex; i<length; i++) {
+      if (i in array) {
+        if (findCallback(originalArray[i], i, originalArray, someObject)) {
+          return result = i;
+        } 
+      }
+    }
+    return result
+  }
+
+tests({
+
+  'It runs as many times, as it takes to meet truthy element': function(){
+    var array = [1, 2, 3];
+    var counter = 0;
+
+    findIndex (array, function(element, i) {
+      counter++;
+      return element === 2
+      
+    })
+    eq(counter, 2);
+  },
+
+  'It returns the index of an element, which was the one to pass the condition first': function () {
+
+    var array = [1, 2, 3, 2, 2];
+    var counter = 0;
+    findIndex (array, function(element, i) {
+      counter++;
+      return element === 2
+      
+    })
+    eq(i, 1);
+  },
+
+  'It returns -1 if no truthy element was found': function () {
+    var array = [1, 2, 3, 2, 2];
+
+    var result = findIndex (array, function(element) {
+      return element === 5
+    })
+    eq(result, '-1');
+  },
+
+  'It ignores holes': function () {
+
+    var array = [0,1,,,,5,6];
+    var counter = 0;
+    findIndex (array, function(value, index) {
+      counter++
+    });
+    eq(counter, 4);
+  },
+
+  'It ignores deleted': function () {
+    var array = [1, 2, 3, 2, 2];
+    var counter = 0;
+        findIndex(array, function(value, index) {
+      // Delete element 4 on first iteration
+      if (index === 0) {
+        delete array[4];
+      }
+      // Element 4 is not visited 
+      //console.log('Visited index ', index, ' with value ', value); 
+      counter++;
+    });
+    eq(counter, 4);
+  },
+
+  'It has an access to custom object, if one is provided': function () {
+    var array = [1, 2, 3, 2, 2];
+    findIndex(array, function(value, index, array) {
+    
+    //console.log('Visited index ', index, ' with access to thisArg ', this.description); 
+      eq(this.description, 'I am optional object')
+    }, {description: 'I am optional object'});
+
+  },
+
+  'The findIndex() does not change original array': function () {
+
+    var originalArray = [1, 2, 3, 2, 2];
+  
+    findIndex (originalArray, function(value, index, originalArray) {
+      array = originalArray;
+      return array
+      
+    })
+    eq(originalArray, array);
+  },
+
+  'Callback can change element of the original array': function () {
+    var array = [1, 2, 3] 
+    findIndex(array, function(value, index, array) {
+    // Change element 0 on first iteration
+    if (index === 0) {
+    
+      array[0] = 100500;
+
+    }
+    return value === 1;
+    });
+     // The element was changed 
+    eq(array[0], 100500);
+  },
+
+  'Despite of the change, value of element passed to callback is the one, which it had at findIndex invocation': function () {
+    var array = [1, 2, 3] 
+    findIndex(array, function(value, index, array) {
+    // Change element 0 on first iteration
+    if (index === 0) {
+    
+      array[0] = 100500;
+
+    }
+    // Element 0 was passed with initial value
+    eq(index, 0)
+    return value === 1;
+    });
+  },
+
+  'Callback will not visit elements, added after findIndex invocation': function () {
+    var array = [1, 2, 3] 
+    var result = findIndex(array, function(value, index, array) {
+    // Adding extra element on first iteration
+    if (index === 0) {
+      array.push(4);
+    }
+    // Callback doesn't visit added element
+    return value === 4;
+    });
+     // However the element was added 
+    eq(result, -1);
+    eq (array.length, 4)
+  }
+})
+
+
+
+</script>
