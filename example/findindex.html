@@ -65,7 +65,7 @@ function findIndex (array, callback, someObject) {
       }
     for (i=startingIndex; i<length; i++) {
       if (i in array) {
-        if (findCallback(originalArray[i], i, originalArray, someObject)) {
+        if (findIndexCallback(originalArray[i], i, originalArray, someObject)) {
           return result = i;
         } 
       }
