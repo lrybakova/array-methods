@@ -1,0 +1,126 @@
+<script src="../simpletest.js"></script>
+<script>
+  // Prototype implementation 
+
+  // function concat(oldArray, newArray) {
+  //   var unitedArray = oldArray;
+  //   var length = unitedArray.length++
+  //   for (i = 0; i < newArray.length; i++) {
+  //     unitedArray[length + i] = newArray[i]
+
+  //   }
+  //   return unitedArray;
+  // }
+
+  function concat(array1, array2, array3) {
+    var unitedArray = [];
+    var arr = arguments;
+    var length = 0
+    for (i = 0; i < arr.length; i++) {
+      length = (length + arr[i].length)
+    }
+    var a = 0;
+    while (a < length) {
+      for (i = 0; i < arr.length; i++) {
+
+        for (j = 0; j < arr[i].length; j++) {
+          unitedArray[a] = arr[i][j];
+          a++;
+        }
+      }
+    }
+    return unitedArray;
+  }
+
+  //Function signature 
+
+  // concat (array1, array2, ..., arrayX)
+
+  //Return Value 
+  // If two arrays provided, then n array object, representing the joined array.
+  // otherwise - shallow copy of the existing array, on which it was called.
+
+  // Callback parameters 
+
+  // array = initial array (required)
+  // value = new array or the value to be joined to existing array (optional)
+  // arrayX = another new array to be joind (optional)
+
+  // Requirements 
+
+  // It should creat new array, consist of elements of the old array, followed by elements of the second argument
+
+  // It should not recurse into nested array arguments  
+
+  // It does not changes original array or any of arrays-arguments
+
+  // If arrays for concating consist of object(s), concat copies references to the objects into new array if object is chanheis changed, it is visible in bith arrays 
+
+  // If arrays for concating consist of strings/numbers/booleans their values will be copied into new array
+  
+  // If only one array is provided it returns a copy of it
+
+
+
+  tests({
+
+    'it should return new array built of elements of arguments': function () {
+      var result = concat([1, 2, 3], [4, 5, 6], [7, 8, 9])
+      eq(result.length, 9)
+    },
+
+    'it should not recurse into nested array arguments': function() {
+      const num1 = [[1]];
+      const num2 = [2, [3]];
+      var result = concat(num1, num2)
+      eq(result[2], num2[1])
+    },
+
+    'it should not change original array or arrays-arguments': function() {
+
+      var arr1 = [1,2]
+      var arr2 = [3,4]
+      var result = concat(arr1, arr2)
+      eq (arr1.length, 2)
+      eq (arr2.length, 2)
+      eq (result.length, 4)
+    },
+
+    'it copies object refeernces into new array, if object was modified, the changes are visible': function() {
+      var me = {name: 'Mila'};
+      var husband = {name: 'Toni'};
+      var neighbour = {name: 'Pekka'}
+      var array1 = [me, husband]
+      var array2 = [neighbour]
+      var swedishFamily = concat(array1, array2)
+      neighbour.name = 'Juha';
+      eq(swedishFamily[2].name, 'Juha')
+    },
+
+    'it copies values of strings into new array': function () {
+      var arr1 = ['Mila', 'is']
+      var arr2 = ['studying', 'JavaScript']
+      var result = concat(arr1, arr2)
+      arr1[0] = 'Gordon'; 
+      eq(result[0], 'Mila')
+
+    }, 
+
+    'it copies the values of Booleans into new array' : function() {
+      var arr1 = [true, true]
+      var arr2 = [false, false]
+      var result = concat(arr1, arr2)
+      arr1[0] = false; 
+      eq(result[0], true)
+    }, 
+
+    'If only one array is provided it returns a copy of it': function() {
+      var arr = [1,2,3];
+      var result = concat(arr);
+      eq(result.length, 3);
+    }
+
+
+
+  })
+</script>
