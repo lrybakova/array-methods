@@ -1,0 +1,104 @@
+<script src="../simpletest.js"></script>
+
+<script>
+  // Prototype implementation 
+
+  // function indexOf(array, searchElement, fromIndex) {
+  //   if (arguments.length < 3) {
+  //     fromIndex = 0;
+  //   } else {
+  //     if (fromIndex > array.length) {
+  //       return false;
+  //     }
+  //   }
+  //   for (i = fromIndex; i < array.length; i++) {
+  //     if (array[i] === searchElement) {
+  //       return true
+  //     } 
+  //   }
+  //    return false
+  // }
+
+  //Function signature 
+
+  // indexOf(array, searchElement[, fromIndex])
+
+  // Callback parameters 
+
+  // array - Array to inspect
+  // searchElement - search term
+  // fromIndex - position in the array to start from 
+
+  // Return value 
+  // The first index of the element in the array; -1 if not found.
+
+  // Requirements 
+  // If element is found it returns index 
+  // If element not found it returns -1 
+  // If fromIndex given, it starts search from position equal to fromIndex
+  // If fromIndex is greater than array left it should return -1 
+  // If fromIndex is negative number, it is taken as the offset from the end of the array 
+  // If fromIndex is equal to 0, the whole array will be searched 
+  // If no indexFrom provided it is taken to be equal to 0 
+
+
+  function includes (array, searchElement, fromIndex) {
+    var length = array.length
+    if (arguments.length < 3) {
+      fromIndex = 0;
+    } else {
+      if (fromIndex > array.length) {
+        return false;
+      } else if (fromIndex < 0) {
+        fromIndex = 0 - fromIndex
+      }
+    }
+    var result = false
+    for (i = fromIndex; i < array.length; i++) {
+      if (array[i] === searchElement) {
+        result = true
+        return result
+      }
+    }
+    return result;
+  }
+
+  tests({
+    'If element is found it returns true': function () {
+      var array = [2, 9, 9];
+      var result = includes(array, 2)
+      eq(result, true)
+    },
+    'If element not found it returns -1': function () {
+      var array = [2, 9, 9];
+      var result = includes(array, 7)
+      eq(result, false)
+    },
+    'If fromIndex given, it starts search from position equal to fromIndex': function () {
+      var array = [2, 9, 9];
+      var result = includes(array, 2, 1)
+      eq(result, false)
+    },
+    'If fromIndex is greater than array left it should return false': function () {
+      var array = [2, 9, 9];
+      var result = includes(array, 2, 4)
+      eq(result, false)
+    },
+    'If fromIndex is negative number, it is taken as the offset from the end of the array ': function () {
+      var array = [2, 9, 9];
+      var result = includes(array, 2, -1)
+      eq(result, false)
+    },
+    'If fromIndex is equal to 0, the whole array will be searched': function () {
+      var array = [2, 9, 9];
+      var result = includes(array, 9, 0)
+      eq(result, true)
+    },
+    'If no indexFrom provided it is taken to be equal to 0': function () {
+      var array = [2, 9, 9]
+      var result = includes(array, 2)
+      eq(result, true)
+    }
+
+  })
+</script>
