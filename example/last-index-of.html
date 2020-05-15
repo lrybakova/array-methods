@@ -3,7 +3,7 @@
 <script>
   // Prototype implementation 
 
-  // function indexOf(array, searchElement, fromIndex) {
+  // function lastIndexOf(array, searchElement, fromIndex) {
   //   if (arguments.length < 3) {
   //     fromIndex = 0;
   //   } else {
@@ -11,18 +11,18 @@
   //       return -1;
   //     }
   //   }
+  //   var result = -1  
   //   for (i = fromIndex; i < array.length; i++) {
   //     if (array[i] === searchElement) {
-  //       return i
-  //     } else { 
-  //       return -1;
-  //     }
+  //       result = i
+  //     } 
   //   }
+  //    return result    
   // }
 
   //Function signature 
 
-  // indexOf(array, searchElement[, fromIndex])
+  // lastIndexOf(array, searchElement[, fromIndex])
 
   // Callback parameters 
 
@@ -32,7 +32,7 @@
 
   // Return value 
 
-  // The index of the first element in the array, matching the condition; -1 if not found.
+  // The index of the last element in the array matching the condition; -1 if not found.
 
 
   // Requirements 
@@ -46,7 +46,7 @@
   // If no indexFrom provided it is taken to be equal to 0 
 
 
-  function indexOf(array, searchElement, fromIndex) {
+  function lastIndexOf(array, searchElement, fromIndex) {
     var length = array.length
     if (arguments.length < 3) {
       fromIndex = 0;
@@ -61,7 +61,6 @@
     for (i = fromIndex; i < array.length; i++) {
       if (array[i] === searchElement) {
         result = i
-        return result
       }
     }
     return result;
@@ -70,37 +69,37 @@
   tests({
     'If element is found it returns index': function () {
       var array = [2, 9, 9];
-      var result = indexOf(array, 2)
-      eq(result, 0)
+      var result = lastIndexOf(array, 9)
+      eq(result, 2)
     },
     'If element not found it returns -1': function () {
       var array = [2, 9, 9];
-      var result = indexOf(array, 7)
+      var result = lastIndexOf(array, 7)
       eq(result, -1)
     },
     'If fromIndex given, it starts search from position equal to fromIndex': function () {
       var array = [2, 9, 9];
-      var result = indexOf(array, 9, 2)
-      eq(result, 2)
+      var result = lastIndexOf(array, 2, 1)
+      eq(result, -1)
     },
     'If fromIndex is greater than array left it should return -1 ': function () {
       var array = [2, 9, 9];
-      var result = indexOf(array, 2, 4)
+      var result = lastIndexOf(array, 2, 4)
       eq(result, -1)
     },
     'If fromIndex is negative number, it is taken as the offset from the end of the array ': function () {
       var array = [2, 9, 9];
-      var result = indexOf(array, 2, -1)
+      var result = lastIndexOf(array, 2, -1)
       eq(result, -1)
     },
     'If fromIndex is equal to 0, the whole array will be searched': function () {
       var array = [2, 9, 9];
-      var result = indexOf(array, 9, 0)
-      eq(result, 1)
+      var result = lastIndexOf(array, 2, 0)
+      eq(result, 0)
     },
     'If no indexFrom provided it is taken to be equal to 0': function () {
       var array = [2, 9, 9]
-      var result = indexOf(array, 2)
+      var result = lastIndexOf(array, 2)
       eq(result, 0)
     }
 
