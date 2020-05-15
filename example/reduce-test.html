@@ -1,69 +1,71 @@
 <script src="../simpletest.js"></script>
 <script>
+  // Prototype implementation 
+  // function reduce (array, callback, startingValue) {
+  // var resultSoFar = startingValue;
+  //     for (i=0; i<array.length; i++) {
+  // resultSoFar = callback(resultSoFar, array[i]);
+  // }
+  // return resultSoFar;
+  // }
 
-// Prototype implementation 
-// function reduce (array, callback, startingValue) {
-// var resultSoFar = startingValue;
-//     for (i=0; i<array.length; i++) {
-// resultSoFar = callback(resultSoFar, array[i]);
-// }
-// return resultSoFar;
-// }
+  //Function signature
+  // reduce(array, callback[, initialValue])
 
-//Function signature
- // reduce(array, callback[, initialValue])
-
-// Callback parameters: 
+  // Callback parameters: 
   // previousValue (resultSoFar e.g. the value received in last iteration)
   // currentValue (array[i] e.g. next array item which is going to be joined to resultSoFar)
   // currentIndex (position of the item in the array, index)
   // array (array itself)
 
 
-// 
-// Requirements: 
+  // 
+  // Requirements: 
 
-// If initialValue, previousValue should start with initialValue
-// If initialValue, currentValue should start with array[0]
-// If initialValue, callback should start at index 0
-// If initialValue, callback runs array.length times
+  // If initialValue, previousValue should start with initialValue
+  // If initialValue, currentValue should start with array[0]
+  // If initialValue, callback should start at index 0
+  // If initialValue, callback runs array.length times
 
-// If no initialValue, previousValue should start with array[0]
-// If no initialValue, currentValue start with array[1]
-// If no initialValue, callback should start at index 1
-// If no initialValue, callback will run length-1 times
+  // If no initialValue, previousValue should start with array[0]
+  // If no initialValue, currentValue start with array[1]
+  // If no initialValue, callback should start at index 1
+  // If no initialValue, callback will run length-1 times
 
-// If initialValue, and array is empty, return initialValue, without calling callback 
-// If no initialValue, and array has one element, return element, without calling a callback
+  // If initialValue, and array is empty, return initialValue, without calling callback 
+  // If no initialValue, and array has one element, return element, without calling a callback
 
-// It should actually reduce 
-// Callback should exclude holes
-// If no initialValue, and array is empty, it should throw TypeError
-// It should pass array as fourth argument 
+  // It should actually reduce 
+  // Callback should exclude holes
+  // If no initialValue, and array is empty, it should throw TypeError
+  // It should pass array as fourth argument 
 
-// Returns value:
-    //Returns  single value
-
-
+  // Returns value:
+  //Returns  single value
 
 
-// Callback parameters: 
+
+
+  // Callback parameters: 
   // previousValue (resultSoFar e.g. the value received in last iteration)
   // currentValue (array[i] e.g. next array item which is going to be joined to resultSoFar)
   // currentIndex (position of the item in the array, index)
   // array (array itself)
 
-function reduce(array, callback, initialValue) {
-  var startingIndex = 0;
-  var resultSoFar = initialValue
-  var filteredArray = array.filter(function(){return true})
-  var length = array.length
-  // No initial value
+  function reduce(array, callback, initialValue) {
+    var startingIndex = 0;
+    var resultSoFar = initialValue
+    var filteredArray = array.filter(function () {
+      return true
+    })
+    var length = array.length
+    // No initial value
     if (arguments.length < 3) {
-    
+
       if (filteredArray.length === 1) {
         return filteredArray[0];
-      } if (filteredArray.length === 0) {
+      }
+      if (filteredArray.length === 0) {
         throw TypeError('Reduce of empty array with no initial value');
       }
 
@@ -71,122 +73,122 @@ function reduce(array, callback, initialValue) {
       while (startingIndex in array === false && startingIndex < length) {
         startingIndex++;
       }
-    resultSoFar = array[startingIndex]
-    startingIndex++
+      resultSoFar = array[startingIndex]
+      startingIndex++
 
-    } else { 
+    } else {
       if (filteredArray.length === 0) {
-      return initialValue;
+        return initialValue;
       }
     }
-  for (i=startingIndex; i < array.length; i++) {
-    if (i in array) {
-    resultSoFar = callback(resultSoFar, array[i], i, array);
+    for (i = startingIndex; i < array.length; i++) {
+      if (i in array) {
+        resultSoFar = callback(resultSoFar, array[i], i, array);
       }
     }
-  return resultSoFar
-}
+    return resultSoFar
+  }
 
   tests({
     'If initialValue, callback runs array.length times': function () {
       var counter = 0;
-      reduce([1,2], function(){
-          counter++
+      reduce([1, 2], function () {
+        counter++
       }, 0);
-      eq (counter, 2)
+      eq(counter, 2)
     },
 
-    'If no initialValue, callback will run length-1 times': function() {
+    'If no initialValue, callback will run length-1 times': function () {
       var counter = 0;
-      reduce([1,2], function(){
-          counter++
+      reduce([1, 2], function () {
+        counter++
       });
-      eq (counter, 1)
+      eq(counter, 1)
     },
-   'If initialValue, previousValue should start with initialValue': function () {
-     reduce([1], function (previousValue) {
-      eq(previousValue, 0)
-     }, 0)
-   },
-   'If initialValue, currentValue should start with array[0]': function () {
-    reduce([1], function (previousValue, currentValue) {
-      eq(currentValue, 1)
-     }, 0)
-   },
-   'If initialValue, callback should start at index 0': function () {
-    reduce([1], function (previousValue, currentValue, currentIndex) {
-      eq(currentIndex, 0)
-     }, 0)
-   },
+    'If initialValue, previousValue should start with initialValue': function () {
+      reduce([1], function (previousValue) {
+        eq(previousValue, 0)
+      }, 0)
+    },
+    'If initialValue, currentValue should start with array[0]': function () {
+      reduce([1], function (previousValue, currentValue) {
+        eq(currentValue, 1)
+      }, 0)
+    },
+    'If initialValue, callback should start at index 0': function () {
+      reduce([1], function (previousValue, currentValue, currentIndex) {
+        eq(currentIndex, 0)
+      }, 0)
+    },
 
-   'If no initialValue, previousValue should start with array[0]': function () {
-    reduce([1,2], function (previousValue) {
-      eq(previousValue, 1)
-     },)
-   },
-   'If no initialValue, currentValue start with array[1]': function () {
-    reduce([1,2], function (previousValue, currentValue, i) {
-      eq(currentValue, 2)
-     },)
-   },
-   'If no initialValue, callback should start at index 1': function () {
-    reduce([1,2], function (previousValue, currentValue, currentIndex) {
-      eq(currentIndex, 1)
-     },)
-   },
+    'If no initialValue, previousValue should start with array[0]': function () {
+      reduce([1, 2], function (previousValue) {
+        eq(previousValue, 1)
+      }, )
+    },
+    'If no initialValue, currentValue start with array[1]': function () {
+      reduce([1, 2], function (previousValue, currentValue, i) {
+        eq(currentValue, 2)
+      }, )
+    },
+    'If no initialValue, callback should start at index 1': function () {
+      reduce([1, 2], function (previousValue, currentValue, currentIndex) {
+        eq(currentIndex, 1)
+      }, )
+    },
 
-   'If initialValue, and array is empty, return initialValue, without calling callback ': function () {
-    var counter = 0;
-     var reduceResult = reduce([], function (previousValue, currentValue, i) {
-      counter++
-     }, 0);
-    eq(counter, 0)
-    eq(reduceResult, 0)
-   },
-   'If no initialValue, and array has one element, return element, without calling a callback': function () {
-    reduce([1], function (previousValue, currentValue, i) {
-      eq(previousValue, 1)
-     },)
-   },
+    'If initialValue, and array is empty, return initialValue, without calling callback ': function () {
+      var counter = 0;
+      var reduceResult = reduce([], function (previousValue, currentValue, i) {
+        counter++
+      }, 0);
+      eq(counter, 0)
+      eq(reduceResult, 0)
+    },
+    'If no initialValue, and array has one element, return element, without calling a callback': function () {
+      reduce([1], function (previousValue, currentValue, i) {
+        eq(previousValue, 1)
+      }, )
+    },
 
-   'It should actually reduce ': function () {
-    var result = reduce([1, 2, 3], function (previousValue, currentValue, currentIndex) {
-      return previousValue + currentValue
-     }, 0) 
-     eq (result, 6)
-   },
-   'Callback should exclude holes': function () {
-     var counter = 0;
-    var result = reduce([1, 2, 3, , , ], function (previousValue, currentValue, currentIndex) {
-      counter++
-      return previousValue + currentValue
-     }, 0) 
-     eq (result, 6);
-   },
-   'Callback should exclude holes if no initial value too': function () {
-     var counter = 0;
-    var result = reduce([ , , , 1, , 2, 3, , , ], function (previousValue, currentValue, currentIndex) {
-      counter++
-      return previousValue + currentValue
-     }) 
-     eq (result, 6);
-     eq (counter, 2)
-   },
-   'If no initialValue, and array is empty, it should throw TypeError': function () {
-    var isTypeError = false; 
-    try {
-       reduce ([], function(){});
-     } catch(e) {
-       isTypeError = (e instanceof TypeError);
-     }
-     eq (isTypeError, true);
-   },
-   'It should pass array as fourth argument ': function () {
-     var testArray = [1,2,3]
-    reduce(testArray, function (previousValue, currentValue, currentIndex, arrayToReduce) {
-      eq(arrayToReduce, testArray)
-     }, 0)
-   },
-  
+    'It should actually reduce ': function () {
+      var result = reduce([1, 2, 3], function (previousValue, currentValue, currentIndex) {
+        return previousValue + currentValue
+      }, 0)
+      eq(result, 6)
+    },
+    'Callback should exclude holes': function () {
+      var counter = 0;
+      var result = reduce([1, 2, 3, , , ], function (previousValue, currentValue, currentIndex) {
+        counter++
+        return previousValue + currentValue
+      }, 0)
+      eq(result, 6);
+    },
+    'Callback should exclude holes if no initial value too': function () {
+      var counter = 0;
+      var result = reduce([, , , 1, , 2, 3, , , ], function (previousValue, currentValue, currentIndex) {
+        counter++
+        return previousValue + currentValue
+      })
+      eq(result, 6);
+      eq(counter, 2)
+    },
+    'If no initialValue, and array is empty, it should throw TypeError': function () {
+      var isTypeError = false;
+      try {
+        reduce([], function () {});
+      } catch (e) {
+        isTypeError = (e instanceof TypeError);
+      }
+      eq(isTypeError, true);
+    },
+    'It should pass array as fourth argument ': function () {
+      var testArray = [1, 2, 3]
+      reduce(testArray, function (previousValue, currentValue, currentIndex, arrayToReduce) {
+        eq(arrayToReduce, testArray)
+      }, 0)
+    },
+
   });
 </script>
