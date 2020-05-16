@@ -1,0 +1,97 @@
+<script src="../simpletest.js"></script>
+
+<script>
+  // Function prototype
+
+  // function join (array, separator) {
+  //   result = array[0]
+  //   for (i=1; i<array.length; i++) {
+  //     result = (result + separator + array[i])
+  //   }
+  //   return result
+
+  // }
+
+  // Function signature
+  // join(array, [separator])
+
+  // Parameters
+
+  // array - array to perform a join() onto
+  // separator - specifies a string to separate each pair of adjacent elements of the array.
+  // Return value
+  // A string with all array elements joined. If arr.length is 0, the empty string is returned
+
+  // Requirements
+
+  // It should return a string conversions of all array elements, concatenated into one string
+
+  // If separator is not provided, elements divided with comma
+
+  // If separator is empty string all elements joined withour separators
+
+  // If separator is not a string it will be converted to a string
+
+  // If array length === 1, the item will be returned without using the separator
+
+  function join(array, separator) {
+    result = array[0];
+    if (separator === undefined) {
+      separator = ",";
+    }
+    if (separator === " ") {
+      separator = "";
+    }
+    if (typeof separator != "string") {
+      if (Array.isArray(separator) === true){
+        separator = separator.toString()
+      } else if (typeof separator === 'object') {
+        separator = separator.toString.call(separator)
+      }
+    }
+    for (i = 1; i < array.length; i++) {
+      result = result + separator + array[i];
+    }
+    return result;
+  }
+
+  tests({
+    "It should return a string conversions of all array elements, concatenated into one string": function () {
+      var a = ["Wind", "Water", "Fire"];
+      var result = join(a);
+      eq(result, "Wind,Water,Fire");
+    },
+    "If separator is not provided, elements divided with comma":function(){
+      var a = ["Wind", "Water", "Fire"];
+      var result = join(a);
+      eq(result, "Wind,Water,Fire");
+    },
+    "If separator is empty string all elements joined withour separators":function(){
+      var a = ["Wind", "Water", "Fire"];
+      var result = join(a, ' ');
+      eq(result, "WindWaterFire");
+    },
+    "If separator is not a string it will be converted to a string(array edition)":function(){
+      var a = ["Wind", "Water", "Fire"];
+      var result = join(a, [1,2]);
+      eq(result, "Wind1,2Water1,2Fire");
+    },
+    "If separator is not a string it will be converted to a string(object edition)":function(){
+      var a = ["Wind", "Water", "Fire"];
+      var result = join(a, {1:2});
+      eq(result, "Wind[object Object]Water[object Object]Fire");
+    },
+    "If instead of array is supplied array-like object, it is turned into a string too":function(){
+      function list() {
+        return join(arguments)
+      }
+      let result = list(1, 2, 3)
+      eq(result, '1,2,3')
+    },
+    "If array length === 1, the item will be returned without using the separator":function(){
+      var a = ["Wind"];
+      var result = join(a);
+      eq(result, "Wind");
+    }
+  });
+</script>
