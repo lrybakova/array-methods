@@ -1,0 +1,140 @@
+<script src="../simpletest.js"></script>
+
+<script>
+  //   Function prototype
+
+  // Description
+
+  // The push() method adds one or more elements to the end of an array and returns the new length of the array.
+
+  // Function signature
+
+  // push(array, element1[, ...[, elementN]])
+
+  // Return value
+  // The new length propery of the object upon which the method was called
+
+  // Parameters
+
+  // elementN = the element(s) to add to the end of the array
+
+  // Requirements
+
+  // It should apend provided the elements to the array
+  // It returns new length of the array on which it was called
+  // It appends elements to the end of the array
+  // It can be called with call
+  // It can be called with apply
+  // It can be called upon object
+  // It throws Type Error if called onto string
+  // It does modify original array, not makes a copy
+
+  // function push(incomingElements) {
+  //   var object = arguments[0];
+  //   var arr = [];
+  //   var a = 0;
+  //   for (i = 1; i < arguments.length; i++) {
+  //     arr[a] = arguments[i]
+  //     a++
+  //   }
+
+  //   // If the length property is not a number:
+  //   if (isNaN(object.length)) {
+  //     object.length = 0;
+  //   }
+
+  //   var counter = object.length;
+  //   for (i = 0; i < arr.length; i++) {
+  //     object[counter] = arr[i];
+  //     counter++;
+
+  //   }
+
+  //   return object.length;
+
+  // }
+
+  function push(incomingElements) {
+    var object = arguments[0];
+
+    // If the length property is not a number:
+    if (isNaN(object.length)) {
+      object.length = 0;
+    }
+    if (Object.prototype.toString.call(this) === "[object String]") {
+      throw new TypeError(this + " is not an object");
+    }
+    if (Object.prototype.toString.call(this) !== "[object Window]") {
+      object = this;
+      counter = Object.keys(object).length;
+      for (i = 0; i < arguments.length; i++) {
+        object[counter] = arguments[i];
+        counter++;
+      }
+      return object.length;
+    }
+    var counter = object.length;
+    for (i = 1; i < arguments.length; i++) {
+      object[counter] = arguments[i];
+      counter++;
+    }
+
+    return object.length;
+  }
+
+  tests({
+    "It should apend provided the elements to the array": function () {
+      var array = ["oranges", "lemons"];
+      var result = push(
+        array,
+        ["cherries", "grapes"],
+        ["bananas", "pineapple"]
+      );
+      eq(result, 4);
+    },
+    "It returns new length of the array on which it was called": function () {
+      var array = ["oranges", "lemons"];
+      var result = push(array, ["cherries", "grapes"]);
+      eq(result, 3);
+    },
+    "It appends elements to the end of the array": function () {
+      var array = ["oranges", "lemons"];
+      var result = push(array, ["cherries", "grapes"], ["bananas"]);
+      eq(array[3], "bananas");
+    },
+    "It can be called with call": function () {
+      var a = [0];
+      push.call(a, 1);
+      eq(a[0], 0);
+    },
+    "It can be called with apply": function () {
+      var a = [0];
+      push.apply(a, [1, 2]);
+      eq(a[0], 0);
+    },
+    "It can be called upon object": function () {
+      var someObject = {
+        0: "ooo"
+      };
+      push.call(someObject, 0);
+      eq(Object.keys(someObject).length, 2);
+      eq(someObject[1], 0);
+    },
+
+    "It throws Type Error if called onto string": function () {
+      var someString = "ooo";
+      try {
+        push.call(someString, 0);
+      } catch (e) {
+        isTypeError = e instanceof TypeError;
+      }
+      eq(isTypeError, true);
+    },
+
+    "It does modify original array, not makes a copy": function () {
+      var a = [0];
+      push.call(a, 1);
+      eq(a.length !== 1, true);
+    },
+  });
+</script>
