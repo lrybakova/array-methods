@@ -1,0 +1,141 @@
+<script src="../simpletest.js"></script>
+
+
+
+
+
+
+<script>
+
+// Function prototype 
+// function slice(array, begin, end) {
+//   var slicedArray = [];
+//   var length = end - begin
+//   var a = 0
+//   while (a < length) {
+//     for (i = begin; i < end; i++) {
+//       slicedArray[a] = array[i];
+//       a++;
+//     }
+//   }
+//   return slicedArray;
+// }
+
+// Function signature
+// slice(array, [begin[, end]])
+
+// Parameters 
+
+// begin - Zero-based index at which to begin extraction.
+// end - Zero-based index before which to end extraction
+
+// Returned value 
+// A new array containing the extracted elements. If begin exceeds array length - then returns empty array
+
+// Requirements
+
+// It returns a portion of array into new array selected from begin to end
+// if begin has negative value, it is set to array-length - [end.value]
+// if begin is not provided it is set to 0
+// if end is not provided it is set to array.length
+// if end is not provided it is set to array.length
+// if end is greater than the length of the sequence, it is set to array.length
+// if called on array-like object/collection it returns array
+// if called on object, it copies references to the object to the new array
+
+
+  function slice(array, begin, end) {
+    var slicedArray = [];
+    if (begin < 0) {
+      begin = array.length + begin;
+    };
+    if (begin === undefined) {
+      begin = 0;
+    };
+    if (end === undefined) {
+      end = array.length;
+    };
+    if (end < 0) {
+      end = array.length + end
+    };
+    var length = end - begin
+    var a = 0
+    while (a < length) {
+      for (i = begin; i < end; i++) {
+        slicedArray[a] = array[i];
+        a++;
+      }
+    }
+    return slicedArray;
+  }
+
+
+  tests({
+    'it returns a portion of array into new array selected from begin to end': function () {
+      var array = [1, 2, 3, 4, 5, 6]
+      result = slice(array, 2, 5)
+      eq(result[0], 3)
+      eq(result[2], 5)
+    },
+
+    'if begin has negative value, it is set to array-length - [end.value]': function () {
+      var numbers = [1, 2, 3, 4, 5]
+      var result = slice(numbers, -1, 5)
+      eq(result[0], 5)
+    },
+
+    'if begin is not provided it is set to 0': function () {
+      var numbers = [1, 2, 3, 4, 5]
+      var result = slice(numbers)
+      eq(result[0], 1)
+    },
+
+    'if begin is greater than the length of the sequence, empty array returned': function () {
+      var numbers = [1, 2, 3, 4, 5]
+      var result = slice(numbers, 5)
+      eq(result[0], undefined)
+    },
+
+    'if end is not provided it is set to array.length': function () {
+      var numbers = [1, 2, 3, 4, 5]
+      var result = slice(numbers, -1)
+      eq(result[0], 5)
+    },
+
+    'if end is negative value it sets to array.length - [end.value]': function () {
+      var numbers = [1, 2, 3, 4, 5]
+      var result = slice(numbers, 0, -2)
+      eq(result[2], 3)
+    },
+
+    'if end is greater than the length of the sequence, it is set to array.length': function () {
+      var numbers = [1, 2, 3, 4, 5]
+      var result = slice(numbers, 2, 8)
+      eq(result[2], 5)
+    },
+
+    'if called on array-like object/collection it returns array': function () {
+      function list() {
+        return slice(arguments)
+      }
+      let result = list(1, 2, 3)
+      eq(result[1], 2)
+    },
+
+    'if called on object, it copies references to the object to the new array': function () {
+      let myHonda = {
+        color: 'red',
+        wheels: 4,
+        engine: {
+          cylinders: 4,
+          size: 2.2
+        }
+      };
+      let myCar = [myHonda, 2, 'cherry condition', 'purchased 1997'];
+      let newCar = slice(myCar, 0, 2);
+      eq(newCar[0].color, 'red');
+    }
+
+
+  })
+</script>
