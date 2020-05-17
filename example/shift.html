@@ -1,0 +1,108 @@
+<script src="../simpletest.js"></script>
+
+<script>
+  // Function prototype
+
+  // Function pop (array) {
+
+  // poppedArray = []
+
+  // for (i=0; i<array.length - 1; i++) {
+  //   poppedArray[i] = array[i];
+  // }
+  // return poppedArray
+  // }
+
+  // Function signature
+  // pop(array)
+
+  // Parameters
+  // None
+
+  // Return value
+
+  // The removed element from the array; undefined if the array is empty
+
+  // Requirements
+
+  // It removes the first element from the array
+  // It actually changes length of array, does not just delete a key value
+  // It returns the value of the removed element
+  // It can be used with call
+  // It can be used with apply
+  // If it was called upon empty array it returns undefined
+  // Objects with no length property return TypeError
+
+  function shift(incomingElement) {
+    var object = incomingElement;
+
+    if (Object.prototype.toString.call(this) === "[object String]") {
+      throw new TypeError(this + " is not an object");
+    }
+    if (Object.prototype.toString.call(this) !== "[object Window]") {
+      object = this;
+      if (object.length === 0) {
+        lastItem = undefined;
+        return lastItem;
+      }
+      var lastItem = object[0];
+      var initialLength = object.length;
+      delete object[0];
+      object.length = initialLength - 1;
+      return lastItem;
+    }
+
+    var firstItem = object[0];
+    var counter = 0;
+    for (i = 1; i < arguments[0].length; i++) {
+      object[counter] = arguments[0][i];
+      counter++;
+    }
+
+    return firstItem;
+  }
+
+  tests({
+    "It removes the first element from the array": function () {
+      arr = [1, 2, 3];
+      shift(arr);
+
+      eq(arr[2] === 3, true);
+    },
+    "It actually changes length of array, does not just delete a key value": function () {
+      arr = [1, 2, 3];
+      shift(arr);
+
+      eq(arr.length === 3, true);
+    },
+    "It returns the value of the removed element": function () {
+      var arr = [1, 2, 3, 4, 5];
+      var result = shift(arr);
+      eq(result, 1);
+    },
+    "It can be used with call": function () {
+      var a = [0, 1];
+      shift.call(a);
+      eq(a.length, 1);
+    },
+    "It can be used with apply": function () {
+      var a = [0, 1];
+      shift.apply(a);
+      eq(a.length, 1);
+    },
+    "If it was called upon empty array it returns undefined": function () {
+      var a = [];
+      var result = shift(a);
+      eq(result, undefined);
+    },
+    "Objects with no length property return TypeError": function () {
+      var someString = "ooo";
+      try {
+        shift.call(someString);
+      } catch (e) {
+        isTypeError = e instanceof TypeError;
+      }
+      eq(isTypeError, true);
+    },
+  });
+</script>
