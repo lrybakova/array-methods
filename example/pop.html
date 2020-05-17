@@ -1,0 +1,117 @@
+<script src="../simpletest.js"></script>
+
+<script>
+  // Function prototype
+
+  // Function pop (array) {
+
+  // poppedArray = []
+
+  // for (i=0; i<array.length - 1; i++) {
+  //   poppedArray[i] = array[i];
+  // }
+  // return poppedArray
+  // }
+
+  // Function signature
+  // pop(array)
+
+  // Parameters
+  // None
+
+  // Return value
+
+  // The removed element from the array; undefined if the array is empty
+
+  // Requirements
+
+  // It removes the last element from the array
+  // It actually changes length of array, does not just delete a key value
+  // It returns the value of the removed element
+  // It can be used with call
+  // It can be used with apply
+  // If it was called upon empty array it returns undefined
+  // Objects with no length property return TypeError
+
+  function pop(incomingElement) {
+    var object = [];
+
+
+    if (Object.prototype.toString.call(this) === "[object String]") {
+      throw new TypeError(this + " is not an object");
+    }
+    if (Object.prototype.toString.call(this) !== "[object Window]") {
+      object = this 
+      if (object.length === 0) {
+        lastItem = undefined
+        return lastItem
+      }
+      var propertyToDelete = object.length - 1
+      var lastItem = object[propertyToDelete]
+      delete object[propertyToDelete];
+      object.length = propertyToDelete
+      return object, lastItem;
+    }
+
+
+ 
+
+    if (incomingElement.length === undefined) {
+      var poppedLength = 0 
+      var lastItem = arguments[0][poppedLength]
+    }  else {
+    var poppedLength = arguments[0].length - 1;
+    var lastItem = arguments[0][poppedLength];
+    }
+
+    
+
+
+
+    for (i = 0; i < arguments[0].length-1; i++) {
+      object[i] = arguments[0][i];
+    }
+    
+    return lastItem;
+  }
+
+  tests({
+    "It removes the last element from the array": function () {
+      var result = pop([1, 2, 3, 4, 5]);
+      eq(result[5] === undefined, true);
+    },
+    "It actually changes length of array, does not just delete a key value": function () {
+      arrPopped = pop([1, 2, 3, 4, 5]);
+      eq(arrPopped.length !== 5, true);
+    },
+    "It returns the value of the removed element": function () {
+      var arr = [1, 2, 3, 4, 5];
+      var result = pop(arr);
+      eq(result, 5);
+    },
+    "It can be used with call": function () {
+      var a = [0, 1];
+      pop.call(a);
+      eq(a.length, 1);
+    },
+    "It can be used with apply": function () {
+      var a = [0, 1];
+      pop.apply(a);
+      eq(a.length, 1);
+    },
+    "If it was called upon empty array it returns undefined": function () {
+      var a = [];
+      var result = pop(a);
+      eq(result, undefined);
+    },
+    "Objects with no length property return TypeError": function () {
+      var someString = "ooo";
+      try {
+        pop.call(someString);
+      } catch (e) {
+        isTypeError = e instanceof TypeError;
+      }
+      eq(isTypeError, true);
+    },
+  });
+</script>
