@@ -1,0 +1,85 @@
+<script src="/simpletest.js"></script>
+
+
+<script>
+
+// Function prototype 
+
+// function reverse (array) {
+//   var object = [];
+//   for (i=0; i<array.length; i++){
+//     object[i]=array[i]
+//   }
+//   var counter = 0;
+//   for (i=array.length-1; i>-1; i--) {
+//     array[counter] = object[i];
+//     counter++;
+//   }
+//   return array
+// }
+
+//Function signature 
+
+// reverse (array)
+
+// Parameters: 
+// array - array to reverse 
+
+// Returned value 
+// Reversed array 
+
+// Function implementation 
+
+function reverse (array) {
+  var object = [];
+
+  // In case it was called upon array-like object, using call or apply
+  if (Object.prototype.toString.call(this) !== "[object Window]") {
+    var objectBeforeReverse = {}
+     for (i=0; i<this.length; i++){
+         objectBeforeReverse[i] = this[i]
+      }
+      var counter = 0
+      for (i = this.length-1; i > -1; i--) {
+        this[counter] = objectBeforeReverse[i];
+        counter++
+      }
+      return this;
+  }
+  
+  for (i=0; i<array.length; i++){
+    object[i]=array[i]
+  }
+  var counter = 0;
+  for (i=array.length-1; i>-1; i--) {
+    array[counter] = object[i];
+    counter++;
+  }
+  return array
+}
+
+// Requirements 
+
+tests({ 
+  'It should reverse the order of the elements in the array': function(){
+    var arr = [1,2,3]
+    var result = reverse(arr)
+    eq(result[0], 3)
+  },
+  'It can be called upon objects, using call': function(){
+    const a = {0: 1, 1: 2, 2: 3, length: 3};
+    var result = reverse.call(a)
+    eq(result[0], 3)
+  },
+
+  'It can be called upon objects, using apply': function(){
+    const a = {0: 1, 1: 2, 2: 3, length: 3};
+    var result = reverse.apply(a)
+    eq(result[0], 3)
+  },
+
+})
+
+
+
+</script>
