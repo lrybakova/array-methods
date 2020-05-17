@@ -1,0 +1,94 @@
+<script src="/simpletest.js"></script>
+
+<script>
+
+
+function unshift (incomingElements) {
+    var object = arguments[0];
+    var array=[]
+    for (i=0; i<arguments[0].length; i++) {
+      array[i] = arguments[0][i]
+    }
+   
+    counter = 0
+    for (i=1; i<arguments.length; i++){
+      object[counter] = arguments[i]
+      counter++
+    }
+
+    
+
+    // If the length property is not a number:
+    if (isNaN(object.length)) {
+      object.length = 0;
+    }
+    // If function is applied upon the string 
+    if (Object.prototype.toString.call(this) === "[object String]") {
+      throw new TypeError(this + " is not an object");
+    }
+
+    // If function is called directly upon array-like object, using call/apply
+    if (Object.prototype.toString.call(this) !== "[object Window]") {
+      object = this;
+      counter = Object.keys(object).length;
+      for (i = 0; i < arguments.length; i++) {
+        object[counter] = arguments[i];
+        counter++;
+      }
+      return object.length;
+    }
+   
+    var counter = object.length;
+    for (i = 0; i < array.length; i++) {
+      object[counter] = array[i];
+      counter++;
+    }
+   
+    return object.length;
+  }
+
+
+  tests({
+    'It adds elements in the beginning of the array': function(){
+      var arr = [4,5,6];
+      unshift(arr, 1, 2, 3)
+      eq(arr[0], 1)
+    },
+
+    "It actually changes length of array": function () {
+      var arr = [4,5,6];
+      unshift(arr, 1, 2, 3)
+      eq(arr.length, 6)
+    },
+    "It returns the new value of the length property": function () {
+      var arr = [4,5,6];
+      var result = unshift(arr, 1, 2, 3)
+      eq(result, 6)
+    },
+    "It can be used with call": function () {
+      var a = [1, 2];
+      unshift.call(a, 0);
+      eq(a.length, 3);
+    },
+    "It can be used with apply": function () {
+      var a = [1, 2];
+      unshift.apply(a, [1]);
+      eq(a.length, 3);
+    },
+    "If it was called upon empty array it returns new length": function () {
+      var a = [];
+      var result = unshift(a, 0);
+      eq(result, 1);
+    },
+    "Objects with no length property return TypeError": function () {
+      var someString = "ooo";
+      try {
+        unshift.call(someString);
+      } catch (e) {
+        isTypeError = e instanceof TypeError;
+      }
+      eq(isTypeError, true);
+    },
+
+  })
+</script>
