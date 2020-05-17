@@ -1,0 +1,111 @@
+<script src="/simpletest.js"></script>
+
+<script>
+  //   Function prototype
+
+  // function fill(array, value, startIndex, endIndex){
+
+  //   for (i=startIndex; i<endIndex; i++){
+  //     array[i] = value;
+  //   };
+
+  //   return array
+
+  // }
+
+  // Function signature
+
+  // fill(array, value[, start[, end]])
+
+  // Parameters
+  // value - Value to fill the array with.
+  // startIndex (optional) - Start index, default 0.
+  // endIndex (optional) - End index, default arr.length.
+
+  // Return value
+
+  // The modified array, filled with value.
+
+  // Function implementation
+
+  function fill(array, value, startIndex, endIndex) {
+    if (endIndex < 0) {
+      endIndex = array.length + endIndex;
+    }
+    if (arguments.length < 4) {
+      endIndex = array.length;
+    }
+
+    if (arguments.length < 3) {
+      startIndex = 0;
+    }
+
+    if (startIndex < 0) {
+      startIndex = array.length + startIndex;
+    }
+
+    // In case it was called upon array-like object, using call or apply
+    if (Object.prototype.toString.call(this) !== "[object Window]") {
+      startIndex = 0;
+      endIndex = this.length;
+      for (i = startIndex; i < endIndex; i++) {
+        this[i] = arguments[0];
+      }
+      return this;
+    }
+
+    for (i = startIndex; i < endIndex; i++) {
+      array[i] = value;
+    }
+
+    return array;
+  }
+
+  // Requirements
+
+  tests({
+    "It should change elements in array to a provided value, from start index to end index": function () {
+      const array = [1, 2, 3, 4];
+      var result = fill(array, 0, 2, 4);
+      eq(result[3], 0);
+    },
+
+    "If no endIndex, it set equal to array.length": function () {
+      const array = [1, 2, 3, 4];
+      var result = fill(array, 0, 2);
+      eq(result[3], 0);
+    },
+    "If no startIndex, it set equal to 0": function () {
+      const array = [1, 2, 3, 4];
+      var result = fill(array, 0);
+      eq(result[0], 0);
+    },
+    "If startIndex is negative, it set equal to array.length + startIndex": function () {
+      const array = [1, 2, 3];
+      var result = fill(array, 4, -3, -2);
+      eq(result[2], 3);
+    },
+    "If endIndex is negative, it set equal to array.length + endIndex": function () {
+      const array = [1, 2, 3];
+      var result = fill(array, 4, -3, -2);
+      eq(result[0], 4);
+    },
+
+    "It can be applied to an object": function () {
+      var result = fill.call({ length: 3 }, 4);
+      eq(result[0], 4);
+    },
+    "It can use an object as a value, in this case each slot in the array will reference that object": function () {
+      var arr = [1, 2, 3];
+      var person = { name: "Mila" };
+      var result = fill(arr, person);
+      eq(result[0], person);
+    },
+
+    "It can be used with Constructor function": function () {
+      var person = { name: "Mila" };
+      var result = fill(Array(3), person);
+      eq(result[0], person);
+    },
+  });
+</script>
