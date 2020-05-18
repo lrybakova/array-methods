@@ -1,0 +1,151 @@
+<script src="/simpletest.js"></script>
+
+
+
+<script>
+
+// Function prototype 
+
+// function copyWithin (array, target, start, end) {
+//   var sequence = [];
+//   var counter = 0;
+//   for (i=start; i<end; i++) {
+//     sequence[counter] = array[i];
+//     counter++;
+//   }
+
+//   for (i=target; i<array.length; i++) {
+//     array[i] = sequence[counter];
+//   }
+
+//   return array
+// }
+
+// Function signature 
+
+// copyWithin(array, target[, start[, end]])
+
+// Parameters 
+
+// array - array to which perform an operation 
+// target index at which to copy the sequence to 
+// start - index at which to start copying 
+// end - index at which to stop copying 
+
+
+
+// Requirements 
+
+// // It should copy parts of array to different location in it 
+// // It does not change the length of array 
+// // If target is negative it is set in the way array.length + target
+// // If target is >= array.length, nothing will be copied 
+// // If target positioned after start, the copied sequence will be trimmed to fit arr.length
+// // If start is negative it set to be array.length + start 
+// // If start is omitted, copyWithin will copy from index 0 
+// // It copies up to, but not including the end 
+// // If end is negative it is set to array.length + end 
+// // If end is omitted, it is set to arr.length
+
+
+// Return value 
+
+// Modified array 
+
+function copyWithin (array, target, start, end) {
+  var sequence = [];
+  var counter = 0;
+
+  if (target<0){
+    target = array.length + target;
+  };
+  if (target>array.length){
+    return array;
+  };
+  if (start<0){
+    start = array.length + start;
+  };
+  if (start === undefined) {
+    start = 0;
+  };
+  if (end === undefined) {
+    end = array.length;
+  };
+  if (end < 0) { 
+    end = array.length + end;
+  };
+  for (i=start; i<end; i++) {
+    sequence[counter] = array[i];
+    counter++;
+  };
+  var counter2 = 0
+  for (i=target; i<array.length; i++) {
+    array[i] = sequence[counter2];
+    counter2++;
+  }
+
+  return array
+}
+  
+tests({
+  'It should copy parts of array to different location in it': function(){
+    var arr = [1,2,3,4,5,6,7,8,9];
+    var result = copyWithin(arr, 0, 5, 8);
+    eq(result[0], 6)
+  },
+  'It does not change the length of array': function(){
+    var arr = [1,2,3,4,5,6,7,8,9];
+    var result = copyWithin(arr, 0, 5, 8);
+    eq(result.length === arr.length, true)
+  },
+
+  'If target is negative it is set in the way array.length + target': function(){
+    var arr = [1,2,3,4,5,6,7,8,9];
+    var result = copyWithin(arr, -2, 5, 8);
+    eq(result[7], 6)
+  },
+
+  'If target is >= array.length, nothing will be copied': function(){
+    var arr = [1,2,3,4,5,6,7,8,9];
+    var result = copyWithin(arr, 9, 5, 8);
+    eq(result[8], 9)
+  },
+
+  'If target positioned after start, the copied sequence will be trimmed to fit arr.length': function() {
+    var arr = [1,2,3,4,5,6,7,8,9];
+    var result = copyWithin(arr, -3, 5, 8);
+    eq(result[8], 8)
+  },
+
+  'If start is negative it set to be array.length + start': function() {
+    var arr = [1,2,3,4,5,6,7,8,9];
+    var result = copyWithin(arr, 1, -2, 8);
+    eq(result[1], 8)
+  },
+
+  'If start is omitted, copyWithin will copy from index 0': function(){
+    var arr = [1,2,3,4,5,6,7,8,9];
+    var result = copyWithin(arr, 1);
+    eq(result[1], 1)
+  }, 
+
+  'It copies up to, but not including the end': function(){
+    var arr = [1,2,3,4,5,6,7,8,9];
+    var result = copyWithin(arr, 0, 5, 8);
+    eq(result[2], 8)
+  },
+  'If end is negative it is set to array.length + end':function(){
+    var arr = [1,2,3,4,5,6,7,8,9];
+    var result = copyWithin(arr, 0, 1, -1);
+    eq(result[5], 7)
+  },
+  'If end is omitted, it is set to arr.length':function(){
+    var arr = [1,2,3,4,5,6,7,8,9];
+    var result = copyWithin(arr, 1, 0);
+    eq(result[8], 8)
+  }
+
+
+
+})
+</script>
