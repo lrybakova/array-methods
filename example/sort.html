@@ -1,0 +1,79 @@
+<script src="/simpletest.js"></script>
+
+<script>
+  // It takes in an array
+  // It compares step by step one element with a next one other
+
+  // It takes item 0 and finds out it position in unicode table
+  // Then it takes second element its position
+  // Then it takes position 0 and - position 1
+  // If result is positive, element 1 is going to array "bigger than 0"
+  // If result is negative it goes in array "smaller"
+  // It takes item 2 and again compares with 0
+  //
+
+  function sort(arr, callback) {
+    n = arr.length;
+    let temp; // here we will temporarily store elements
+    let flag; // indication of readiness, see below
+    if (arguments[1]) {
+      for (i = 0; i < n; i++) {
+        flag = 0;
+
+        for (j = 0; j < n - i - 1; j++) {
+          if (callback(arr[j], arr[j + 1]) > 0) {
+            temp = arr[j];
+            arr[j] = arr[j + 1];
+            arr[j + 1] = temp;
+            flag = 1; // if in last loop was no swapping, no need to do another loop, array is already sorted
+          }
+        }
+        if (flag === 0) {
+          return arr;
+        }
+      }
+    } else {
+      for (i = 0; i < n; i++) {
+        if ((flag = 0)) {
+          return arr;
+        }
+        for (j = 0; j < n - i - 1; j++) {
+          if (arr[j] > arr[j + 1]) {
+            temp = arr[j];
+            arr[j] = arr[j + 1];
+            arr[j + 1] = temp;
+            flag = 1; // we keep it equal 1 as long as swappings keep happen
+          }
+        }
+      }
+    }
+    return arr;
+  }
+
+  tests({
+    "It should sort numbers in ascending order": function () {
+      let arr = [3, 1, 21, 12, 5, 9];
+      let result = sort(arr);
+      console.log(result);
+    },
+
+    "It should sort letters in lexicographical order": function () {
+      let arr = ["b", "s", "t", "a", "d"];
+      let result = sort(arr);
+      console.log(result);
+    },
+
+    "If callback it delegates sorting to it": function () {
+      let arr = [2, 1, 5, 4, 3, 6, "a"];
+      let counter = 0;
+      sort(arr, function (a, b) {
+        counter++;
+        if (a < b) return -1;
+        if (a > b) return 1;
+        if (a === 0) return 0;
+      });
+    },
+
+    //need to do more tests later on :)
+  });
+</script>
