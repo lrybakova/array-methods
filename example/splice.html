@@ -1,0 +1,254 @@
+
+<script src="/simpletest.js"></script>
+
+
+<script>
+  
+// Example
+
+  // const months = ['Jan', 'March', 'April', 'June']
+  // inserts at index 1:
+  // months.splice(1,0,Feb) 
+  // console.log(months) >>> ["Jan", "Feb", "March", "April", "June"]
+  // replaces at index 4:
+  // months.splice(4,1, 'May') 
+  // console.log(months) >>> ["Jan", "Feb", "March", "April", "May"]
+
+  // Function signature 
+
+  // let arrDeletedItems = splice(array, start[, deleteCount[, item1[, item2[, ...]]]])
+
+  // Parameters 
+
+  // start - index at which to start changing the array 
+  // deleteCount - number of elements to delete from the start
+  // intem1, item2 = elements to add to the array 
+
+  // Return value 
+
+  // An array containing the deleted elements or empty array if none was removed
+
+  // Requirements 
+
+  // It delete items starting from index === start 
+  // If start is > array.length, start is set == array.length 
+  // If start < 0, it is set array.length + start 
+  // If array.length + start < 0, start is set === 0 
+
+  // If no deleteCount, then all the elements from start to end of the array will be deleted 
+  // If deleteCount > array.length - start all the elements from start will be deleted 
+  // If deleteCount is <== 0, no elements are removed
+
+  // If new items are provided, it should be inserted to array from array[start]
+
+
+  // If items are removed from original array, it reurns array of all removed items 
+  // If no items removed it returns empty array 
+
+  // If number of new items is != number of elements being removed, array.length will be different after the end of the call 
+
+  function splice(array, start, deleteCount, newElements) {
+    let arrayofDeletedItems = [];
+    if (start < 0) {
+      start = array.length + start;
+      if (start <0) {
+      start = 0;
+  }
+    };
+    if (start > array.length) {
+      start = array.length
+    };
+
+    if (array.length + start < 0){
+      start = 0
+    };
+
+    if (deleteCount >= 0) {
+      //filling arrayofdeleteditems with content before original array changes
+      let counter3 = 0;
+      for (i = start; i < start + deleteCount; i++) {
+        arrayofDeletedItems[counter3] = array[i];
+        counter3++;
+      };
+
+      //if there are new items
+      if (arguments.length > 3) {
+        //case when number of deleted items matches with # of new items
+        if (deleteCount === arguments.length - 3) {
+          //taking array and just overwriting it with new items 
+          let counter4 = 0
+          for (i = start; i < start + arguments.length - 3; i++) {
+            array[i] = arguments[3 + counter4];
+            counter4++;
+          }
+          // case when number of deleted items doesn't match with # of new items
+        } else { // we need to stick new ones while keeping old ones
+          //taking the end of the array into temp 
+          let temp = []
+          let counter5 = 0
+          for (i = start + deleteCount; i < array.length; i++) {
+            temp[counter5] = array[i];
+            counter5++;
+          }
+
+          //adding new elements to original array 
+          let counter6 = 0;
+          for (i = start; i < start + arguments.length - 3; i++) {
+            array[i] = arguments[3 + counter6]
+            counter6++
+          }
+
+          // adding the end of the array 
+          let counter7 = 0
+          for (i = start + arguments.length - 3; i < start + arguments.length - 3 + temp.length; i++) {
+            array[i] = temp[counter7];
+            counter7++;
+          }
+        }
+
+      } else { // if no new items
+
+        //taking the end of array in temp array
+        let temp = [];
+        let counter = 0;
+        for (i = start + deleteCount; i < array.length; i++) {
+          temp[counter] = array[i];
+          counter++;
+        }
+
+        //returning it to initial array on new place 
+        let counter2 = 0;
+        for (i = start; i < start + deleteCount; i++) {
+          array[i] = temp[counter2];
+          counter2++
+
+        }
+        // cutting exceeding items from the end of array 
+        array.length = array.length - deleteCount;
+
+      }
+
+    } else { //when deletecount <== 0
+      //taking the end of the array into temp 
+      if (deleteCount < 0 || isNaN(Number(deleteCount))) {
+        deleteCount = 0
+        let temp = []
+        let counter5 = 0
+        for (i = start + deleteCount; i < array.length; i++) {
+          temp[counter5] = array[i];
+          counter5++;
+        }
+
+        //adding new elements to original array 
+        let counter6 = 0;
+        for (i = start; i < start + arguments.length - 3; i++) {
+          array[i] = arguments[3 + counter6]
+          counter6++
+        }
+
+        // adding the end of the array 
+        let counter7 = 0
+        for (i = start + arguments.length - 3; i < start + arguments.length - 3 + temp.length; i++) {
+          array[i] = temp[counter7];
+          counter7++;
+        }
+      }
+    }
+
+    return arrayofDeletedItems
+  }
+
+
+
+  tests({
+
+      'It should return an array': function () {
+        let array = [];
+
+        let result = splice(array, 0, 0);
+
+        eq(Array.isArray(result), true);
+    
+      },
+
+      'It should modify the array from array[start]': function () {
+        let array = [1,2,3,4]
+        splice(array, 1, 1, 0)
+        eq(array[1], 0);
+        
+      },
+
+      'If start is > array.length, start is set == array.length': function () {
+        let array = [1,2,3,4]
+        splice(array, 5, 0, 5)
+        eq(array[4], 5);
+
+      },
+      'If start < 0, it is set array.length + start': function () {
+        let array = [1,2,3,4]
+        splice(array, -1, 1, 8)
+        eq(array[3], 8);
+      },
+      'If array.length + start < 0, start is set === 0 ': function () {
+        let array = [1,2,3,4]
+        splice(array, -5, 1, 0)
+        eq(array[0], 0);
+      },
+
+      'If deletCount is = 0 it should not remove any items': function () {
+        let array = ['a', 'b', 'c', 'd'];
+        splice(array, 2, 0, 'x', 'y')
+        eq(array.length, 6)
+
+      },
+
+      'If deletCount is > 0 it should remove # of items = deleteCount': function () {
+        let array = ['a', 'b', 'c', 'd'];
+        splice(array, 0, 1)
+        eq(array.length, 3)
+
+      },
+
+      'If deleteCount is undefined it is set equal to 0': function () {
+        let array = [1,2,3]
+        splice(array, 0, undefined, 'x')
+        eq(array.length, 4)
+      },
+
+      'If deleteCount > array.length - start all the elements from start will be deleted': function () {
+        let array = [0,1,2,3,4,5]
+        splice(array, 2, 5)
+        eq(array.length, 2)
+      },
+
+      'If deleteCount is <== 0, no elements are removed': function () {
+        let array = [0,1,2,3,4,5]
+        splice(array, 2, -1)
+        eq(array.length, 6)
+      },
+      'If new items are provided, it should be inserted to array from array[start]': function () {
+        let array = ['a', 'b', 'c', 'd'];
+        splice(array, 2, 0, 'x', 'y');
+        eq(array[2], 'x');
+        eq(array[3], 'y');
+      
+    },
+    'If items are removed from original array, it returns array of all removed items': function () {
+      let array = ['a', 'b', 'c', 'd'];
+       let result = splice(array, 2, 1);
+        eq(result[0], 'c');
+    },
+    'If no items removed it returns empty array': function () {
+      let array = ['a', 'b', 'c', 'd'];
+        let result = splice(array, 2, 0);
+        eq(result.length, 0);
+    },
+    'If number of new items is != number of elements being removed, array.length will be different after the end of the call ':
+    function () {
+        let array = ['a', 'b', 'c', 'd'];
+        let result = splice(array, 2, 0, 'x');
+        eq(array.length !=4, true);
+    }
+
+  })
+</script>
